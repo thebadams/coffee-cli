@@ -9,6 +9,7 @@ import (
 
 type model struct {
 	coffees []string
+	cursor  int
 }
 
 func initialModel() model {
@@ -34,11 +35,15 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m model) View() string {
 	s := "Coffees\n\n"
-	for _, coffee := range m.coffees {
-		s += coffee + "\n"
+	for i, coffee := range m.coffees {
+		cursor := " "
+		if m.cursor == i {
+			cursor = ">"
+		}
+		s += cursor + coffee + "\n"
 	}
 
-	s += "\nPress q to quite program"
+	s += "\nPress q to quit program"
 	return s
 }
 
