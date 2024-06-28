@@ -8,7 +8,7 @@ type program struct {
 	coffees      []string
 }
 
-func DefaultProgram() program {
+func defaultProgram() program {
 	return program{
 		programPages: []string{"main menu", "new coffee", "list coffee"},
 		coffees: []string{
@@ -52,4 +52,10 @@ func (p program) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 	return p, nil
+}
+
+func CreateProgram() *tea.Program {
+	p := tea.NewProgram(defaultProgram())
+
+	return p
 }

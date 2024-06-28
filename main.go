@@ -4,14 +4,13 @@ import (
 	"fmt"
 	"os"
 
-	tea "github.com/charmbracelet/bubbletea"
 	"github.com/thebadams/coffee-cli/internal/program"
 )
 
 func main() {
-	p := tea.NewProgram(program.DefaultProgram())
+	p := program.CreateProgram()
 	if _, err := p.Run(); err != nil {
-		fmt.Printf("There has been an error: %v", err)
+		fmt.Printf("There was an error on start up: %v", err)
 		os.Exit(1)
 	}
 }
