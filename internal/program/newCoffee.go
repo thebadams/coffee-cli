@@ -8,3 +8,9 @@ func newCoffeeString(p program) string {
 	s += "Press m to return to the main menu"
 	return s
 }
+
+type coffee struct {
+	name    string
+	roaster string
+	origins []string
+}

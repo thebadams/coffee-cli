@@ -5,14 +5,17 @@ import tea "github.com/charmbracelet/bubbletea"
 type program struct {
 	programState int
 	programPages []string
-	coffees      []string
+	coffees      []coffee
 }
 
 func defaultProgram() program {
 	return program{
 		programPages: []string{"main menu", "new coffee", "list coffee"},
-		coffees: []string{
-			"Munyinya Hill, Lot #2", "Finca La Estrella - Late Harvest", "El Cedro", "Sierra Morena",
+		coffees: []coffee{
+			{"Munyinya Hill, Lot #2", "Sey Coffee", []string{}},
+			{"Finca La Estrella - Late Harvest", "Sey Coffee", []string{}},
+			{"El Cedro", "Sey Coffee", []string{}},
+			{"Sierra Morena", "Sey Coffee", []string{}},
 		},
 	}
 }
