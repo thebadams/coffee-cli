@@ -7,9 +7,9 @@ type program struct {
 	programPages []string
 }
 
-func defaultProgram() program {
+func DefaultProgram() program {
 	return program{
-		programPages: []string{"main"},
+		programPages: []string{"main menu", "new coffee"},
 	}
 }
 
@@ -21,8 +21,12 @@ func (p program) View() string {
 	var s string
 	switch p.programState {
 	case 0:
-		s += "MAIN MENU/n/n"
+		s = mainMenuString(p)
+	case 1:
+		s = newCoffeeString(p)
 	}
+
+	s += footerString()
 	return s
 }
 
@@ -32,6 +36,10 @@ func (p program) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "q", "esc":
 			return p, tea.Quit
+		case "n":
+			p.programState = 1
+		case "m":
+			p.programState = 0
 		}
 	}
 	return p, nil

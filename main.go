@@ -5,7 +5,7 @@ import (
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
-	program "github.com/thebadams/coffee-cli/internal"
+	"github.com/thebadams/coffee-cli/internal/program"
 )
 
 func main() {
