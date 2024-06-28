@@ -5,11 +5,15 @@ import tea "github.com/charmbracelet/bubbletea"
 type program struct {
 	programState int
 	programPages []string
+	coffees      []string
 }
 
 func DefaultProgram() program {
 	return program{
-		programPages: []string{"main menu", "new coffee"},
+		programPages: []string{"main menu", "new coffee", "list coffee"},
+		coffees: []string{
+			"Munyinya Hill, Lot #2", "Finca La Estrella - Late Harvest", "El Cedro", "Sierra Morena",
+		},
 	}
 }
 
@@ -24,6 +28,8 @@ func (p program) View() string {
 		s = mainMenuString(p)
 	case 1:
 		s = newCoffeeString(p)
+	case 2:
+		s = listCoffeeString(p)
 	}
 
 	s += footerString()
@@ -40,6 +46,9 @@ func (p program) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			p.programState = 1
 		case "m":
 			p.programState = 0
+		case "l":
+			p.programState = 2
+
 		}
 	}
 	return p, nil
