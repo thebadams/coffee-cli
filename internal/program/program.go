@@ -1,15 +1,25 @@
 package program
 
-import tea "github.com/charmbracelet/bubbletea"
+import (
+	"github.com/charmbracelet/bubbles/textinput"
+	tea "github.com/charmbracelet/bubbletea"
+)
 
 type program struct {
-	programState int
-	programPages []string
 	coffees      []coffee
+	inputs       []textinput.Model
+	programPages []string
+	programState int
+	inputIndex   int
+}
+
+type page struct {
+	name  string
+	index int
 }
 
 func defaultProgram() program {
-	return program{
+	p := program{
 		programPages: []string{"main menu", "new coffee", "list coffee"},
 		coffees: []coffee{
 			{"Munyinya Hill, Lot #2", "Sey Coffee", []string{}},
@@ -17,7 +27,32 @@ func defaultProgram() program {
 			{"El Cedro", "Sey Coffee", []string{}},
 			{"Sierra Morena", "Sey Coffee", []string{}},
 		},
+		inputs: make([]textinput.Model, 3),
 	}
+
+	var t textinput.Model
+	for i := range p.inputs {
+		t = textinput.New()
+		switch i {
+		case 0:
+			t.Placeholder = "Name"
+			t.Focus()
+		case 1:
+			t.Placeholder = "Roaster"
+		case 2:
+			t.Placeholder = "Origin(s)"
+		}
+		p.inputs[i] = t
+	}
+	return p
+}
+
+func (p *program) updateInputs(msg tea.Msg) tea.Cmd {
+	cmds := make([]tea.Cmd, len(p.inputs))
+	for i := range p.inputs {
+		p.inputs[i], cmds[i] = p.inputs[i].Update(msg)
+	}
+	return tea.Batch(cmds...)
 }
 
 func (p program) Init() tea.Cmd {
@@ -40,21 +75,29 @@ func (p program) View() string {
 }
 
 func (p program) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	switch p.programState {
+	case 0:
+		switch msg := msg.(type) {
+		case tea.KeyMsg:
+			switch msg.String() {
+			case "n":
+				p.programState = 1
+			case "l":
+				p.programState = 2
+			}
+		}
+	}
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "q", "esc":
-			return p, tea.Quit
-		case "n":
-			p.programState = 1
-		case "m":
-			p.programState = 0
-		case "l":
-			p.programState = 2
-
+			{
+				return p, tea.Quit
+			}
 		}
 	}
-	return p, nil
+	cmd := p.updateInputs(msg)
+	return p, cmd
 }
 
 func CreateProgram() *tea.Program {

@@ -9,3 +9,10 @@ func mainMenuString(p program) string {
 
 	return s
 }
+
+func mainMenu() page {
+	return page{
+		name:  "Main Menu",
+		index: 0,
+	}
+}
