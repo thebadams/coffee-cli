@@ -75,29 +75,34 @@ func (p program) View() string {
 }
 
 func (p program) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	switch p.programState {
-	case 0:
-		switch msg := msg.(type) {
-		case tea.KeyMsg:
-			switch msg.String() {
-			case "n":
-				p.programState = 1
-			case "l":
-				p.programState = 2
-			}
-		}
-	}
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "q", "esc":
-			{
-				return p, tea.Quit
+
+		// Universal Key Inputs
+		case "ctrl+c", "esc":
+			return p, tea.Quit
+		case "ctrl+m":
+			if p.programState != 0 {
+				p.programState = 0
+			}
+		case "ctrl+n":
+			if p.programState != 1 {
+				p.programState = 1
+			}
+		case "ctrl+l":
+			if p.programState != 2 {
+				p.programState = 2
+			}
+		default:
+			if p.programState == 2 {
+				cmd := p.updateInputs(msg)
+				return p, cmd
+
 			}
 		}
 	}
-	cmd := p.updateInputs(msg)
-	return p, cmd
+	return p, nil
 }
 
 func CreateProgram() *tea.Program {
