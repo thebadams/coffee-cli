@@ -2,16 +2,51 @@ package db
 
 import (
 	"database/sql"
-	"fmt"
-	"os"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
-func Connect() {
-	dbName := "file:../coffee.db"
-	db, err := sql.Open("libsql", dbName)
+type Database struct {
+	db *sql.DB
+}
+type Coffee struct {
+	Name    string
+	Roaster string
+	Origins string
+}
+
+type connectError struct {
+	message string
+}
+
+func (c *connectError) Error() string {
+	return c.message
+}
+
+func Connect() (Database, error) {
+	dbName := "file:./coffee.db"
+	db, err := sql.Open("sqlite3", dbName)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to open database %s", err)
-		os.Exit(1)
+		return Database{}, &connectError{message: "Cannot Connect to Database"}
 	}
-	defer db.Close()
+	return Database{db: db}, nil
+}
+
+func (c *Database) GetAllCoffees() ([]Coffee, error) {
+	rows, err := c.db.Query("SELECT name, roaster, origins from coffee")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	data := make([]Coffee, 0)
+
+	for rows.Next() {
+		coffee := Coffee{}
+		err = rows.Scan(&coffee.Name, &coffee.Roaster, &coffee.Origins)
+		if err != nil {
+			return nil, err
+		}
+		data = append(data, coffee)
+	}
+	return data, nil
 }

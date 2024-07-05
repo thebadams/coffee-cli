@@ -4,35 +4,41 @@ import (
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/thebadams/coffee-cli/db"
 )
 
-type coffee struct {
-	name    string
-	roaster string
-	origins []string
-}
 type listCoffeeModel struct {
-	coffees []coffee
+	coffees []db.Coffee
+	errors  string
+}
+
+func connectToDB() tea.Msg {
+	database, err := db.Connect()
+	if err != nil {
+		return err
+	}
+	data, err := database.GetAllCoffees()
+	if err != nil {
+		return err
+	}
+	return data
 }
 
 func listCoffeePage() listCoffeeModel {
-	coffees := []coffee{
-		{"Danche", "Sey Coffee", []string{"Gedeb, Gedeo"}},
-		{"Sierra Morena", "Sey Coffee", []string{"Las Mercedes, Palestina, Huila"}},
-		{"Finca La Estrella - Late Harvest", "Sey Coffee", []string{"Urrao, Antioquia"}},
-		{"Bukeye", "Sey Coffee", []string{"Kayanza"}},
-		{"El Cedro", "Sey Coffee", []string{"Purutal, San Agustin, Huila"}},
-	}
-
-	return listCoffeeModel{coffees}
+	return listCoffeeModel{}
 }
 
 func (m *listCoffeeModel) Init() tea.Cmd {
-	return nil
+	return connectToDB
 }
 
 func (m *listCoffeeModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
+	case error:
+		m.coffees = []db.Coffee{{Name: "Coffee", Roaster: "Roaster", Origins: "Origin"}}
+		m.errors = msg.Error()
+	case []db.Coffee:
+		m.coffees = msg
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "esc", "q":
@@ -60,8 +66,11 @@ func (m *listCoffeeModel) View() string {
 	b.WriteRune('\n')
 	b.WriteRune('\n')
 	for _, coffee := range m.coffees {
-		b.WriteString(coffee.name)
+		b.WriteString(coffee.Name)
 		b.WriteRune('\n')
+	}
+	if m.errors != "" {
+		b.WriteString(m.errors)
 	}
 	return b.String()
 }
