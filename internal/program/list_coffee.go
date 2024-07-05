@@ -8,8 +8,8 @@ import (
 )
 
 type listCoffeeModel struct {
-	coffees []db.Coffee
 	errors  string
+	coffees []db.Coffee
 }
 
 func connectToDB() tea.Msg {

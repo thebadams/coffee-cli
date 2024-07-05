@@ -10,8 +10,8 @@ import (
 
 type createCoffeeModel struct {
 	errors string
-	focus  int
 	inputs []textinput.Model
+	focus  int
 }
 
 func (m *createCoffeeModel) addNewCoffee() tea.Msg {
