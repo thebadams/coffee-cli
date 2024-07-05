@@ -50,3 +50,15 @@ func (c *Database) GetAllCoffees() ([]Coffee, error) {
 	}
 	return data, nil
 }
+
+func (c *Database) CreateNewCoffee(name string, roaster string, origins string) (int, error) {
+	res, err := c.db.Exec("INSERT INTO coffee VALUES(null, ?, ?, ?)", name, roaster, origins)
+	if err != nil {
+		return 0, err
+	}
+	var id int64
+	if id, err = res.LastInsertId(); err != nil {
+		return 0, nil
+	}
+	return int(id), nil
+}
