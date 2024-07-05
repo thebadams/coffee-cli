@@ -56,10 +56,10 @@ func (m *createCoffeeModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			} else {
 				m.focus++
 			}
-			if m.focus > len(m.inputs) {
+			if m.focus > len(m.inputs)-1 {
 				m.focus = 0
 			} else if m.focus < 0 {
-				m.focus = len(m.inputs)
+				m.focus = len(m.inputs) - 1
 			}
 			cmds := make([]tea.Cmd, len(m.inputs))
 			for i := 0; i <= len(m.inputs)-1; i++ {
@@ -86,7 +86,17 @@ func (m *createCoffeeModel) updateInputs(msg tea.Msg) tea.Cmd {
 
 func (m *createCoffeeModel) View() string {
 	var b strings.Builder
-	b.WriteString("Create Coffee Page\n\n")
+	b.WriteString("create coffee time\n\n")
+	b.WriteString("[esc] to go to previous page")
+	b.WriteRune('\n')
+	b.WriteString("[down, tab] to cycle down inputs")
+	b.WriteRune('\n')
+
+	b.WriteString("[up, shift+tab] to cycle up inputs")
+	b.WriteRune('\n')
+	b.WriteString("[enter] to move to next input")
+	b.WriteRune('\n')
+	b.WriteRune('\n')
 	for i := range m.inputs {
 		b.WriteString(m.inputs[i].View())
 		if i < len(m.inputs)-1 {

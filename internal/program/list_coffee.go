@@ -35,7 +35,7 @@ func (m *listCoffeeModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "ctrl+c", "esc":
+		case "ctrl+c", "esc", "q":
 			return m, tea.Quit
 		case "m":
 			main_menu := mainMenu()
@@ -51,7 +51,14 @@ func (m *listCoffeeModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m *listCoffeeModel) View() string {
 	var b strings.Builder
-	b.WriteString("List Coffee Menu\n\n")
+	b.WriteString("list coffee time\n\n")
+	b.WriteString("[m] to return to main menu")
+	b.WriteRune('\n')
+	b.WriteString("[n] to add new coffee")
+	b.WriteRune('\n')
+	b.WriteString("[q, esc, or ctrl+c] to quit program")
+	b.WriteRune('\n')
+	b.WriteRune('\n')
 	for _, coffee := range m.coffees {
 		b.WriteString(coffee.name)
 		b.WriteRune('\n')
