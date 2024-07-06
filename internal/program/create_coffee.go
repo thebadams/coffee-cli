@@ -8,6 +8,7 @@ import (
 	"github.com/thebadams/coffee-cli/db"
 )
 
+// TODO: Bugfix - cannot figure out why m.focus doesn't seem to reset to 0 on enter at end of form
 type createCoffeeModel struct {
 	errors string
 	inputs []textinput.Model
@@ -66,6 +67,8 @@ func (m *createCoffeeModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "tab", "shift+tab", "enter", "up", "down":
 			s := msg.String()
 			if s == "enter" && m.focus == len(m.inputs)-1 {
+				m.focus++
+
 				return m, m.addNewCoffee
 			}
 			if s == "up" || s == "shift+tab" {
